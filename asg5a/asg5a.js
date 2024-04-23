@@ -61,28 +61,6 @@ function main() {
     const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
     cylinder.position.x = 2;
     scene.add(cylinder);
-
-    // GLB Model Loader
-    const glbLoader = new GLTFLoader();
-    glbLoader.load(
-        'Imposter.glb',
-        function(gltf) {
-            scene.add(gltf.scene);
-            gltf.scene.position.set(0, 0, 0);
-            gltf.scene.scale.set(1, 1, 1);
-        },
-        undefined,
-        function(error) {
-            console.error('An error happened with the GLB model:', error);
-        }
-    );
-
-    function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-    }
-
-    animate();
 }
 
 main();
