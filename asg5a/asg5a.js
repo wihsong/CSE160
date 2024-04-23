@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
+
 
 function main() {
     const canvas = document.querySelector('#c');
@@ -21,6 +22,21 @@ function main() {
     const light = new THREE.DirectionalLight(color, intensity);
     light.position.set(-1, 2, 4);
     scene.add(light);
+
+    const objLoader = new OBJLoader();
+    objLoader.load(
+        'Car.obj',  // path to the 'Car.obj' file
+        function (object) {
+            scene.add(object);  // add the loaded object to the scene
+            object.position.set(0, 0, 0);  // adjust position as needed
+        },
+        function (xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        function (error) {
+            console.error('An error happened loading the OBJ file:', error);
+        }
+    );
 
     // Texture Loader for Cube
     const loader = new THREE.TextureLoader();
@@ -61,6 +77,13 @@ function main() {
     const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
     cylinder.position.x = 2;
     scene.add(cylinder);
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+
+    animate();
 }
 
 main();
