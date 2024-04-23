@@ -24,10 +24,8 @@ function main() {
     // Texture Loader
     const loader = new THREE.TextureLoader();
     loader.load(
-        'Bo.png',  // Path to texture file
+        'wall.jpg',
         function(texture) {
-            // On load
-            // Cube with Texture
             const boxWidth = 1;
             const boxHeight = 1;
             const boxDepth = 1;
@@ -37,7 +35,7 @@ function main() {
             cube.position.x = -2;
             scene.add(cube);
         },
-        undefined,  // onProgress optional callback
+        undefined,
         function(error) {
             console.error('An error occurred loading the texture:', error);
         }
