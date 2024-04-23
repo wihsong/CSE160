@@ -65,7 +65,7 @@ function main() {
     // GLB Model Loader
     const glbLoader = new GLTFLoader();
     glbLoader.load(
-        'Sussy Imposter.glb',
+        'Imposter.glb',
         function(gltf) {
             scene.add(gltf.scene);
             gltf.scene.position.set(0, 0, 0);
