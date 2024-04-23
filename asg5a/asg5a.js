@@ -21,10 +21,10 @@ function main() {
     light.position.set(-1, 2, 4);
     scene.add(light);
 
-    // Texture Loader
+    // Cube
     const loader = new THREE.TextureLoader();
     loader.load(
-        'wall.jpg',
+        'Bo.png',
         function(texture) {
             const boxWidth = 1;
             const boxHeight = 1;
@@ -63,6 +63,12 @@ function main() {
 
     function animate() {
         requestAnimationFrame(animate);
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        sphere.rotation.x += 0.01;
+        sphere.rotation.y += 0.01;
+        cylinder.rotation.x += 0.01;
+        cylinder.rotation.y += 0.01;
         renderer.render(scene, camera);
     }
 
