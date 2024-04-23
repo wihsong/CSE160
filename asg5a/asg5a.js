@@ -36,9 +36,14 @@ function main() {
     const sphereWidthDivisions = 32;
     const sphereHeightDivisions = 16;
     const sphereGeometry = new THREE.SphereGeometry(sphereRadius, sphereWidthDivisions, sphereHeightDivisions);
-    const sphereMaterial = new THREE.MeshPhongMaterial({color: 0x8844aa});
-    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    scene.add(sphere);
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load('Bo.png', function(texture) {
+        const sphereMaterial = new THREE.MeshPhongMaterial({
+            map: texture
+        });
+        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        scene.add(sphere);
+    });
 
     // Cylinder
     const cylinderRadiusTop = 0.5;
