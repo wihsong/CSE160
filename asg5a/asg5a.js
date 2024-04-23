@@ -31,19 +31,6 @@ function main() {
     cube.position.x = -2;
     scene.add(cube);
 
-    // Texture Loader
-    const loader = new THREE.TextureLoader();
-    loader.load('Bo.png', function(texture) {
-        // Sphere
-        const sphereRadius = 0.5;
-        const sphereWidthDivisions = 32;
-        const sphereHeightDivisions = 16;
-        const sphereGeometry = new THREE.SphereGeometry(sphereRadius, sphereWidthDivisions, sphereHeightDivisions);
-        const sphereMaterial = new THREE.MeshPhongMaterial({ map: texture });
-        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        scene.add(sphere);
-    });
-
     // Cylinder
     const cylinderRadiusTop = 0.5;
     const cylinderRadiusBottom = 0.5;
@@ -55,18 +42,33 @@ function main() {
     cylinder.position.x = 2;
     scene.add(cylinder);
 
+    // Texture Loader
+    const loader = new THREE.TextureLoader();
+    loader.load('Bo.png', function(texture) {
+        const sphereRadius = 0.5;
+        const sphereWidthDivisions = 32;
+        const sphereHeightDivisions = 16;
+        const sphereGeometry = new THREE.SphereGeometry(sphereRadius, sphereWidthDivisions, sphereHeightDivisions);
+        const sphereMaterial = new THREE.MeshPhongMaterial({ map: texture });
+        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        scene.add(sphere);
+
+        // Move the animate function call here to ensure the sphere is fully loaded
+        animate();
+    });
+
     function animate() {
         requestAnimationFrame(animate);
         cube.rotation.x += 0.01;
         cube.rotation.y += 0.01;
-        sphere.rotation.x += 0.01;
-        sphere.rotation.y += 0.01;
+        if (typeof sphere !== 'undefined') {
+            sphere.rotation.x += 0.01;
+            sphere.rotation.y += 0.01;
+        }
         cylinder.rotation.x += 0.01;
         cylinder.rotation.y += 0.01;
         renderer.render(scene, camera);
     }
-
-    animate();
 }
 
 main();
