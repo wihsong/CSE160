@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'; // Correct import for GLTFLoader
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 function main() {
     const canvas = document.querySelector('#c');
@@ -25,7 +25,7 @@ function main() {
     // Texture Loader for Cube
     const loader = new THREE.TextureLoader();
     loader.load(
-        'wall.png',
+        'wall.jpg',
         function(texture) {
             const boxWidth = 1;
             const boxHeight = 1;
