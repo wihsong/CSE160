@@ -76,6 +76,13 @@ function main() {
             console.error('An error happened with the GLB model:', error);
         }
     );
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+
+    animate();
 }
 
 main();
