@@ -21,15 +21,27 @@ function main() {
     light.position.set(-1, 2, 4);
     scene.add(light);
 
-    // Cube
-    const boxWidth = 1;
-    const boxHeight = 1;
-    const boxDepth = 1;
-    const boxGeometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
-    const boxMaterial = new THREE.MeshPhongMaterial({color: 0x44aa88});
-    const cube = new THREE.Mesh(boxGeometry, boxMaterial);
-    cube.position.x = -2;
-    scene.add(cube);
+    // Texture Loader
+    const loader = new THREE.TextureLoader();
+    loader.load(
+        'Bo.png',  // Path to texture file
+        function(texture) {
+            // On load
+            // Cube with Texture
+            const boxWidth = 1;
+            const boxHeight = 1;
+            const boxDepth = 1;
+            const boxGeometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+            const boxMaterial = new THREE.MeshPhongMaterial({ map: texture });
+            const cube = new THREE.Mesh(boxGeometry, boxMaterial);
+            cube.position.x = -2;
+            scene.add(cube);
+        },
+        undefined,  // onProgress optional callback
+        function(error) {
+            console.error('An error occurred loading the texture:', error);
+        }
+    );
 
     // Sphere
     const sphereRadius = 0.5;
@@ -53,12 +65,6 @@ function main() {
 
     function animate() {
         requestAnimationFrame(animate);
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-        sphere.rotation.x += 0.01;
-        sphere.rotation.y += 0.01;
-        cylinder.rotation.x += 0.01;
-        cylinder.rotation.y += 0.01;
         renderer.render(scene, camera);
     }
 
