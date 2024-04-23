@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 function main() {
     const canvas = document.querySelector('#c');
@@ -62,7 +62,6 @@ function main() {
     cylinder.position.x = 2;
     scene.add(cylinder);
 
-    /*
     // GLB Model Loader
     const glbLoader = new GLTFLoader();
     glbLoader.load(
@@ -84,7 +83,6 @@ function main() {
     }
 
     animate();
-    */
 }
 
 main();
