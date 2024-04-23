@@ -77,7 +77,6 @@ function main() {
             console.error('An error happened with the GLB model:', error);
         }
     );
-    */
 
     function animate() {
         requestAnimationFrame(animate);
@@ -85,6 +84,7 @@ function main() {
     }
 
     animate();
+    */
 }
 
 main();
