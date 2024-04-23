@@ -62,6 +62,7 @@ function main() {
     cylinder.position.x = 2;
     scene.add(cylinder);
 
+    /*
     // GLB Model Loader
     const glbLoader = new GLTFLoader();
     glbLoader.load(
@@ -76,6 +77,7 @@ function main() {
             console.error('An error happened with the GLB model:', error);
         }
     );
+    */
 
     function animate() {
         requestAnimationFrame(animate);
