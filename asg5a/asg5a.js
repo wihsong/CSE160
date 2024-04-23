@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'; // Correct import for GLTFLoader
 
 function main() {
     const canvas = document.querySelector('#c');
@@ -21,10 +22,10 @@ function main() {
     light.position.set(-1, 2, 4);
     scene.add(light);
 
-    // Cube
+    // Texture Loader for Cube
     const loader = new THREE.TextureLoader();
     loader.load(
-        'Bo.png',
+        'wall.png',
         function(texture) {
             const boxWidth = 1;
             const boxHeight = 1;
@@ -61,18 +62,20 @@ function main() {
     cylinder.position.x = 2;
     scene.add(cylinder);
 
-    function animate() {
-        requestAnimationFrame(animate);
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-        sphere.rotation.x += 0.01;
-        sphere.rotation.y += 0.01;
-        cylinder.rotation.x += 0.01;
-        cylinder.rotation.y += 0.01;
-        renderer.render(scene, camera);
-    }
-
-    animate();
+    // GLB Model Loader
+    const glbLoader = new GLTFLoader();
+    glbLoader.load(
+        'Sussy Imposter.glb',
+        function(gltf) {
+            scene.add(gltf.scene);
+            gltf.scene.position.set(0, 0, 0);
+            gltf.scene.scale.set(1, 1, 1);
+        },
+        undefined,
+        function(error) {
+            console.error('An error happened with the GLB model:', error);
+        }
+    );
 }
 
 main();
