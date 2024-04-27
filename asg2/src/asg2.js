@@ -1,11 +1,18 @@
-// ColoredPoint.js (c) 2012 matsuda
+// GLobal Variables
+let canvas;
+let gl;
+let a_Position;
+let u_FragColor;
+let u_ModelMatrix;
+let u_GlobalRotateMatrix;
+
 // Vertex shader program
 var VSHADER_SOURCE = `
   attribute vec4 a_Position;
-  uniform float u_Size;
+  uniform mat4 u_ModelMatrix;
+  uniform mat4 u_GlobalRotateMatrix;
   void main() {
-    gl_Position = a_Position;
-    gl_PointSize = u_Size;
+    gl_Position = u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
   }`
 
 // Fragment shader program
@@ -15,13 +22,6 @@ var FSHADER_SOURCE = `
   void main() {
     gl_FragColor = u_FragColor;
   }`
-
-//GLobal Variables
-let canvas;
-let gl;
-let a_Position;
-let u_FragColor;
-let u_Size;
 
 function setupWebGL(){
   // Retrieve <canvas> element
@@ -34,6 +34,8 @@ function setupWebGL(){
     console.log('Failed to get the rendering context for WebGL');
     return;
   }
+
+  gl.enable(gl.DEPTH_TEST);
 }
 
 function connectVariablesToGLSL(){
@@ -57,170 +59,119 @@ function connectVariablesToGLSL(){
     return;
   }
 
-  // Get the storage location of u_Size
-  u_Size = gl.getUniformLocation(gl.program, 'u_Size');
-  if (!u_Size) {
-    console.log('Failed to get the storage location of u_Size');
+  // Get the storage location of u_ModelMatrix
+  u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+  if (!u_ModelMatrix) {
+    console.log('Failed to get the storage location of u_ModelMatrix');
     return;
   }
+
+  // Get the storage location of u_GlobalRotateMatrix
+  u_GlobalRotateMatrix = gl.getUniformLocation(gl.program, 'u_GlobalRotateMatrix')
+  if (!u_GlobalRotateMatrix) {
+    console.log('Failed to get the storage location of u_GlobalRotateMatrix');
+    return;
+  }
+
+  // Set an initial value for this matrix to identity
+  var identityM = new Matrix4();
+  gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
 }
 
-// Constants
-const POINT = 0;
-const TRIANGLE = 1;
-const CIRCLE = 2;
-
 // Globals related UI elements
-let g_selectedColor=[1.0,1.0,1.0,1.0];
-let g_selectedSize=30;
-let g_selectedType=POINT;
-let g_selectedSegments = 10;
-
+let g_globalAngleX=0;
+let g_globalAngleY=0;
+let g_yellowAngle=0;
+let g_magentaAngle=0;
+let g_yellowAnimation=false;
 // Set up actions for the HTML UI elements
 function addActionsForHTMLUI(){
-  // Button Events (Shape Type)
-  document.getElementById('clearButton').onclick = function() {g_shapesList=[]; renderAllShapes(); };
-  document.getElementById('drawButton').onclick = function() { drawImage(); };
+  // Button Events
+  document.getElementById('animationYellowOffButton').onclick = function() {g_yellowAnimation = false;};
+  document.getElementById('animationYellowOnButton').onclick = function() {g_yellowAnimation = true;};
 
-  document.getElementById('pointButton').onclick = function() {g_selectedType=POINT};
-  document.getElementById('triButton').onclick = function() {g_selectedType=TRIANGLE};
-  document.getElementById('circleButton').onclick = function() {g_selectedType=CIRCLE};
-
-  // Color Slider Events
-  document.getElementById('redSlide').addEventListener('mouseup', function() { g_selectedColor[0] = this.value/100; });
-  document.getElementById('greenSlide').addEventListener('mouseup', function() { g_selectedColor[1] = this.value/100; });
-  document.getElementById('blueSlide').addEventListener('mouseup', function() { g_selectedColor[2] = this.value/100; });
-
-  // Size Slider Events
-  document.getElementById('sizeSlide').addEventListener('mouseup', function() { g_selectedSize = this.value; });
-
-  // Segment SLider Events
-  document.getElementById('segmentSlide').addEventListener('input', function() { g_selectedSegments = parseInt(this.value); renderAllShapes(); });
+  // Slider Events
+  document.getElementById('yellowSlide').addEventListener('mousemove', function() { g_yellowAngle = this.value; renderAllShapes(); });
+  document.getElementById('magentaSlide').addEventListener('mousemove', function() { g_magentaAngle = this.value; renderAllShapes(); });
 }
 
 function main() {
 
   // Set up canvas and gl variables
   setupWebGL();
+
   // Set up GLSL shader programs and conenct GLSL variables
   connectVariablesToGLSL();
 
   // Set up actions for the HTML UI elements
   addActionsForHTMLUI();
 
-  // Register function (event handler) to be called on a mouse press
-  canvas.onmousedown = click;
-
-  canvas.onmousemove = function(ev) {if(ev.buttons ==1) { click(ev) } }
   // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-  // Clear <canvas>
-  gl.clear(gl.COLOR_BUFFER_BIT);
+  addMouseControl();
+  //renderAllShapes();
+  requestAnimationFrame(tick);
 }
 
-var g_shapesList = [];
-/*
-var g_points = [];  // The array for the position of a mouse press
-var g_colors = [];  // The array to store the color of a point
-var g_sizes = []; // The array to store the size
-*/
+var g_startTime = performance.now()/1000.0;
+var g_seconds = performance.now()/1000.0-g_startTime;
 
-function click(ev) {
-  
-  // Extract the even click and return it in WebGL coordinates
-  [x,y] = convertCoordinatesEventToGL(ev);
+// Called by browser repeatedly whenever its time
+function tick() {
+  // Save the current time
+  g_seconds = performance.now()/1000.0-g_startTime;
+  console.log(g_seconds);
 
-  // Create and store the new point
-  let point;
-  if (g_selectedType==POINT) {
-    point = new Point();
-  } else if (g_selectedType==TRIANGLE) {
-    point = new Triangle();
-  } else {
-    point = new Circle();
-  }
-  point.position=[x,y];
-  point.color=g_selectedColor.slice();
-  point.size=g_selectedSize;
-  g_shapesList.push(point);
-
-  // Draw every shape that is supposed to be in the canvas
+  // Draw everything
   renderAllShapes();
-}
 
-// Extract the event click and return it in WebGL coordinates
-function convertCoordinatesEventToGL(ev){
-  var x = ev.clientX; // x coordinate of a mouse pointer
-  var y = ev.clientY; // y coordinate of a mouse pointer
-  var rect = ev.target.getBoundingClientRect();
-
-  x = ((x - rect.left) - canvas.width/2)/(canvas.width/2);
-  y = (canvas.height/2 - (y - rect.top))/(canvas.height/2);
-
-  return([x,y]);
+  // Tell the browser to update again when it has time
+  requestAnimationFrame(tick);
 }
 
 // Draw every shape that is supposed to be in the canvas
 function renderAllShapes(){
-  // Clear <canvas>
-  gl.clear(gl.COLOR_BUFFER_BIT);
 
-  // var len = g_points.length;
-  var len = g_shapesList.length;
+  // Create a new rotation matrix combining X and Y rotations
+  var globalRotMat = new Matrix4().rotate(g_globalAngleY, 0, 1, 0); // Rotate around Y-axis
+  globalRotMat.rotate(g_globalAngleX, 1, 0, 0); // Rotate around X-axis
 
-  for(var i = 0; i < len; i++) {
-
-    g_shapesList[i].render();
-
-  }
-}
-
-function drawImage() {
-  // Clear existing shapes
-  g_shapesList = [];
-  renderAllShapes();
+  // Pass the updated rotation matrix to the shader
+  gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
   
+  // Clear <canvas>
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  drawColoredTriangle([0, 0, 0, -0.1, 0.1, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([0, 0, 0.1, 0, 0.1, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([0.1, 0, 0.1, -0.05, 0.2, 0], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([0, 0, 0, -0.1, -0.1, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([0, 0, -0.1, 0, -0.1, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.1, 0, -0.2, 0, -0.1, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.2, 0, -0.2, -0.1, -0.1, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.2, 0, -0.2, -0.1, -0.3, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.2, 0, -0.3, 0, -0.3, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.3, 0, -0.4, 0, -0.3, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.3, -0.1, -0.4, -0.1, -0.4, 0], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.4, 0, -0.4, -0.1, -0.5, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.4, 0, -0.5, 0, -0.5, -0.1], [0.2, 0.2, 0.2, 1]);
-  drawColoredTriangle([-0.5, 0, -0.5, -0.05, -0.6, 0], [0.2, 0.2, 0.2, 1]);
+  var body = new Cube();
+  body.color = [1,0,0,1];
+  body.matrix.translate(-0.25, -0.75, 0.0);
+  body.matrix.scale(0.5, 0.3, 0.5);
+  body.render();
 
-  drawColoredTriangle([0, 0.1, 0.2, 0.1, 0.2, 0.3], [1, 1, 1, 1]);
-  drawColoredTriangle([0, 0.1, -0.2, 0.1, -0.2, 0.25], [1, 1, 1, 1]);
-  drawColoredTriangle([0, 0.2, 0.1, 0.2, 0, 0.3], [1, 1, 1, 1]);
-  drawColoredTriangle([-0.2, 0.1, -0.2, 0.2, -0.3, 0.1], [1, 1, 1, 1]);
-  drawColoredTriangle([-0.2, 0.2, -0.2, 0.3, -0.3, 0.2], [1, 1, 1, 1]);
-  drawColoredTriangle([-0.3, 0.1, -0.35, 0.2, -0.4, 0.1], [1, 1, 1, 1]);
-  drawColoredTriangle([-0.4, 0.1, -0.6, 0.3, -0.6, 0.1], [1, 1, 1, 1]);
-  drawColoredTriangle([-0.4, 0.2, -0.4, 0.3, -0.5, 0.2], [1, 1, 1, 1]);
+  var leftArm = new Cube();
+  leftArm.color = [1,1,0,1];
+  leftArm.matrix.setTranslate(0, -0.5, 0);
+  leftArm.matrix.rotate(-5, 1, 0, 0);
 
-  drawColoredTriangle([0, -0.2, -0.2, -0.2, -0.2, -0.3], [0.85, 0.7, 0.68, 1]);
-  drawColoredTriangle([-0.4, -0.2, -0.2, -0.2, -0.2, -0.3], [0.85, 0.7, 0.68, 1]);
+  if (g_yellowAnimation) {
+    leftArm.matrix.rotate(45*Math.sin(g_seconds), 0, 0, 1);
+  } else {
+    leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);
+  }
 
-  drawColoredTriangle([0.3, -0.1, 0.4, -0.1, 0.4, 0], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.5, 0, 0.5, -0.1, 0.6, -0.1], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.5, 0, 0.5, 0.1, 0.6, 0.1], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.5, 0, 0.5, 0.1, 0.4, 0], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.4, 0.1, 0.5, 0.1, 0.4, 0], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.3, 0.1, 0.3, 0.2, 0.4, 0.1], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.3, -0.1, 0.4, -0.1, 0.4, -0.2], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.3, -0.1, 0.3, -0.2, 0.4, -0.2], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.3, -0.3, 0.3, -0.2, 0.4, -0.2], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.3, -0.3, 0.4, -0.3, 0.4, -0.2], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.5, -0.2, 0.5, -0.1, 0.6, -0.1], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.5, -0.2, 0.6, -0.2, 0.6, -0.1], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.5, -0.2, 0.6, -0.2, 0.6, -0.3], [0.96, 0.9, 0.87, 1]);
-  drawColoredTriangle([0.5, -0.2, 0.5, -0.3, 0.6, -0.3], [0.96, 0.9, 0.87, 1]);
+  var yellowCoordinatesMat = new Matrix4(leftArm.matrix);
+  leftArm.matrix.scale(0.25, 0.7, 0.5);
+  leftArm.matrix.translate(-0.5, 0, 0);
+  leftArm.render();
+
+  var box = new Cube()
+  box.color = [1,0,1,1];
+  box.matrix = yellowCoordinatesMat;
+  box.matrix.translate(0, 0.65, 0);
+  box.matrix.rotate(g_magentaAngle, 0, 0, 1);
+  box.matrix.scale(0.3, 0.3, 0.3);
+  box.matrix.translate(-0.5, 0, -0.001);
+  box.render();
 }
+
