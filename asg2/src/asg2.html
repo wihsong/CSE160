@@ -10,25 +10,176 @@
       <p>Name: William Song</p>
       <p>Email: wihsong@ucsc.edu</p>
   </header>
-    <canvas id="webgl" width="400" height="400">
+    <canvas id="webgl" width="800" height="800">
     Please use a browser that supports "canvas"
     </canvas>
 
     <p>
-    Yellow = <input type="range" min="-45" max="45" value="0" class="slider" id="yellowSlide">
-    </p>
-    <p>
-    Magenta = <input type="range" min="-45" max="45" value="0" class="slider" id="magentaSlide">
-    </p>
-    <p>
     Animation: 
-    <button type="button" id="animationYellowOnButton">ON</button>
-    <button type="button" id="animationYellowOffButton">OFF</button>
+    <button type="button" id="animationOnButton">ON</button>
+    <button type="button" id="animationOffButton">OFF</button>
+    <br>
+    Animation Type:
+    <button type="button" id="animationHopButton">Hop</button>
+    <button type="button" id="animationStandButton">Stand</button>
+    <br>
+    'Shift+Click' for a cool animation!
     </p>
-
+    <p>
+    Head = <input type="range" min="-45" max="0" value="-20" class="slider" id="headSlide">
+    <span id="headValue">-20</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Upper Body = <input type="range" min="-5" max="25" value="10" class="slider" id="upperBodySlide">
+    <span id="upperValue">10</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Whole Body = <input type="range" min="-100" max="100" value="0" class="slider" id="wholeBodySlide">
+    <span id="wholeValue">0</span>
+    </p>
+    <p>
+    Left Ear = <input type="range" min="0" max="50" value="0" class="slider" id="leftEarSlide">
+    <span id="leftEarValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Right Ear = <input type="range" min="0" max="50" value="0" class="slider" id="rightEarSlide">
+    <span id="rightEarValue">0</span>
+    </p>
+    <p>
+    Left Arm = <input type="range" min="0" max="90" value="20" class="slider" id="leftArmSlide">
+    <span id="leftArmValue">20</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Right Arm = <input type="range" min="0" max="90" value="20" class="slider" id="rightArmSlide">
+    <span id="rightArmValue">20</span>
+    </p>
+    <p>
+    Left Thigh = <input type="range" min="-150" max="-30" value="-80" class="slider" id="leftThighSlide">
+    <span id="leftThighValue">-80</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Left Upper Leg = <input type="range" min="-120" max="-45" value="-90" class="slider" id="leftUpperLegSlide">
+    <span id="leftUpperLegValue">-90</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Left Lower Leg = <input type="range" min="35" max="155" value="135" class="slider" id="leftLowerLegSlide">
+    <span id="leftLowerLegValue">135</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Left Foot = <input type="range" min="-30" max="90" value="0" class="slider" id="leftFootSlide">
+    <span id="leftFootValue">0</span>
+    </p>
+    <p>
+    Right Thigh = <input type="range" min="-150" max="-30" value="-80" class="slider" id="rightThighSlide">
+    <span id="rightThighValue">-80</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Right Upper Leg = <input type="range" min="-120" max="-45" value="-90" class="slider" id="rightUpperLegSlide">
+    <span id="rightUpperLegValue">-90</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Right Lower Leg = <input type="range" min="35" max="155" value="135" class="slider" id="rightLowerLegSlide">
+    <span id="rightLowerLegValue">135</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Right Foot = <input type="range" min="-30" max="90" value="0" class="slider" id="rightFootSlide">
+    <span id="rightFootValue">0</span>
+    </p>
+    <p>
+    Tail1_X = <input type="range" min="-15" max="10" value="0" class="slider" id="tail1XSlide">
+    <span id="tail1XValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail1_Y = <input type="range" min="-15" max="15" value="0" class="slider" id="tail1YSlide">
+    <span id="tail1YValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail1_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail1ZSlide">
+    <span id="tail1ZValue">0</span>
+    </p>
+    <p>
+    Tail2_X = <input type="range" min="-45" max="45" value="15" class="slider" id="tail2XSlide">
+    <span id="tail2XValue">15</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail2_Y = <input type="range" min="-45" max="45" value="7" class="slider" id="tail2YSlide">
+    <span id="tail2YValue">7</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail2_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail2ZSlide">
+    <span id="tail2ZValue">0</span>
+    </p>
+    <p>
+    Tail3_X = <input type="range" min="-45" max="45" value="20" class="slider" id="tail3XSlide">
+    <span id="tail3XValue">20</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail3_Y = <input type="range" min="-45" max="45" value="7" class="slider" id="tail3YSlide">
+    <span id="tail3YValue">7</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail3_Z = <input type="range" min="-30" max="30" value="4" class="slider" id="tail3ZSlide">
+    <span id="tail3ZValue">4</span>
+    </p>
+    <p>
+    Tail4_X = <input type="range" min="-45" max="45" value="10" class="slider" id="tail4XSlide">
+    <span id="tail4XValue">10</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail4_Y = <input type="range" min="-45" max="45" value="10" class="slider" id="tail4YSlide">
+    <span id="tail4YValue">10</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail4_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail4ZSlide">
+    <span id="tail4ZValue">0</span>
+    </p>
+    <p>
+    Tail5_X = <input type="range" min="-45" max="45" value="0" class="slider" id="tail5XSlide">
+    <span id="tail5XValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail5_Y = <input type="range" min="-45" max="45" value="-30" class="slider" id="tail5YSlide">
+    <span id="tail5YValue">-30</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail5_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail5ZSlide">
+    <span id="tail5ZValue">0</span>
+    </p>
+    <p>
+    Tail6_X = <input type="range" min="-45" max="45" value="0" class="slider" id="tail6XSlide">
+    <span id="tail6XValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail6_Y = <input type="range" min="-45" max="45" value="-40" class="slider" id="tail6YSlide">
+    <span id="tail6YValue">-40</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail6_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail6ZSlide">
+    <span id="tail6ZValue">0</span>
+    </p>
+    <p>
+    Tail7_X = <input type="range" min="-45" max="45" value="0" class="slider" id="tail7XSlide">
+    <span id="tail7XValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail7_Y = <input type="range" min="-45" max="45" value="-40" class="slider" id="tail7YSlide">
+    <span id="tail7YValue">-40</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail7_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail7ZSlide">
+    <span id="tail7ZValue">0</span>
+    </p>
+    <p>
+    Tail8_X = <input type="range" min="-45" max="45" value="0" class="slider" id="tail8XSlide">
+    <span id="tail8XValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail8_Y = <input type="range" min="-45" max="45" value="-40" class="slider" id="tail8YSlide">
+    <span id="tail8YValue">-40</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail8_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail8ZSlide">
+    <span id="tail8ZValue">0</span>
+    </p>
+    <p>
+    Tail9_X = <input type="range" min="-45" max="45" value="0" class="slider" id="tail9XSlide">
+    <span id="tail9XValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail9_Y = <input type="range" min="-45" max="45" value="-40" class="slider" id="tail9YSlide">
+    <span id="tail9YValue">-40</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail9_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail9ZSlide">
+    <span id="tail9ZValue">0</span>
+    </p>
+    <p>
+    Tail10_X = <input type="range" min="-45" max="45" value="00" class="slider" id="tail10XSlide">
+    <span id="tail10XValue">0</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail10_Y = <input type="range" min="-45" max="45" value="-5" class="slider" id="tail10YSlide">
+    <span id="tail10YValue">-5</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+    Tail10_Z = <input type="range" min="-30" max="30" value="0" class="slider" id="tail10ZSlide">
+    <span id="tail10ZValue">0</span>
+    </p>
+    
+    
     <footer>
       <p>Notes to Grader:</p>
-      <p>HI</p>
+      <p>Muad'Dib</p>
     </footer>
 
     <!-- lib files -->
@@ -40,6 +191,7 @@
     <!-- src files -->
     <script src="Triangle.js"></script>
     <script src="Cube.js"></script>
+    <script src="Prism.js"></script>
     <script src="mouseControls.js"></script>
     <script src="drawBody.js"></script>
     <script src="asg2.js"></script>
