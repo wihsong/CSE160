@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>asg4 - William Song</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #glcanvas { display: block; width: 100vw; height: 100vh; }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #instructions {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button id="toggle-lighting">Toggle Lighting</button>
+        <button id="toggle-normals">Toggle Normals</button>
+        <br>
+        Light Color: <input type="color" id="light-color" value="#ffffff">
+    </div>
+    <div id="instructions">
+        Left Click & Drag to Look Around<br>
+        Right Click to Toggle Spotlight
+    </div>
+    <canvas id="glcanvas"></canvas>
+    <!-- Include the required library files -->
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix.js"></script>
+    <script src="asg4.js"></script>
+</body>
+</html>
